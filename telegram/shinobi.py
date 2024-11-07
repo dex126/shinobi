@@ -1,17 +1,24 @@
 import pandas as pd
-from aiogram import Bot, Dispatcher, types
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.utils import executor
-from dotenv import load_dotenv 
+import dotenv
+import logging
 import os
 
-load_dotenv()
+from shinobi_bot import config
+
+from aiogram import Bot, Dispatcher, types
+from aiogram.fsm.storage.redis import RedisStorage
+from aiogram.utils import executor
+
+
+logging.basicConfig(level=logging.INFO)
+dotenv.load_dotenv()
 
 EXCEL_FILE = 'shinobi.xlsx'
 
-bot = Bot(token=os.getenv('BOT_TOKEN'))
+bot = Bot(token=config.BOT_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
+
 
 DAYS_OF_WEEK = {
     "Понедельник": None,
@@ -28,8 +35,8 @@ classroom_indices = {
     5: 6,  # F -> G
     7: 8,  # H -> I
     9: 10, # J -> K
-    11: 12,# L -> M
-    13: 14,# N -> O
+    11: 12, # L -> M
+    13: 14, # N -> O
     15: 16,# P -> Q
     17: 18,# R -> S
     19: 20,# T -> U
@@ -62,6 +69,7 @@ classroom_indices = {
     73: 74 # BV -> BW
 }
 
+
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -69,12 +77,14 @@ async def send_welcome(message: types.Message):
     markup.add(item)
     await message.answer("Добро пожаловать! Нажмите на кнопку, чтобы проверить расписание.", reply_markup=markup)
 
+
 @dp.message_handler(lambda message: message.text == "Проверить расписание")
 async def select_day(message: types.Message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     for day in DAYS_OF_WEEK.keys():
         markup.add(day)
     await message.answer("Выберите день недели:", reply_markup=markup)
+
 
 @dp.message_handler(lambda message: message.text in DAYS_OF_WEEK)
 async def check_schedule(message: types.Message):
@@ -126,13 +136,10 @@ async def check_schedule(message: types.Message):
         response += "\nСпасибо за терпение!\nУдачного дня😊"
     
     else:
-        await message.answer(f"Этого дня нет в расписании.")
+        await message.answer("Этого дня нет в расписании.")
         return
 
     await message.answer(response)
 
-if __name__ == '__main__':
-    try:
-        executor.start_polling(dp, skip_updates=True)
-    except Exception as e:
-        print(f"Произошла ошибка: {e}. Перезапуск бота...")
+# if __name__ == '__main__':
+#     executor.start_polling(dp, skip_updates=True)
