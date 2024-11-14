@@ -1,5 +1,5 @@
 # shinobi
-[![Maintainability](https://api.codeclimate.com/v1/badges/7fe6ca6c13394fb6b7db/maintainability)](https://codeclimate.com/github/dex126/shinobi/maintainability) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
+[![Maintainability](https://api.codeclimate.com/v1/badges/7fe6ca6c13394fb6b7db/maintainability)](https://codeclimate.com/github/dex126/shinobi/maintainability) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dex126/shinobi/issues) [![version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/dex126/shinobi/issues) 
 
 
 ### О проекте
@@ -28,7 +28,7 @@
 1. Пробросить файл расписания, либо достать его автоматически через `webserver`.
 2. Заполнить .env в корневой папке проекта, а так-же в папке **excel**. Все примеры указаны в `.env.example`.
 
--   Для дебага на локальной машине достаточно запустить `start.py` (telegram entrypoint) и `sanic start_server:app` (sanic webserver) в корневой папке проекта.
+Для дебага на локальной машине достаточно запустить `start.py` (telegram entrypoint) и `sanic start_server:app` (sanic webserver) в корневой папке проекта.
 
 Деплой проекта в продакшн производится через Docker:
 -   `docker-compose -f deploy/docker-compose.yml up -d --build` - запускает весь проект, включая excel, webserver и telegram.
