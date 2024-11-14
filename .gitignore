@@ -1,5 +1,6 @@
 env/
 venv/
 __pycache__/
+redis/dump.rdb
 .env
 *.xlsx
