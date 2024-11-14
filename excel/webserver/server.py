@@ -1,16 +1,14 @@
-import random
 import os
 import asyncio
 import httpx
-from urllib.request import urlretrieve
-from datetime import datetime, timedelta
+import urllib.request
 
 from sanic import Request, Sanic
 from sanic import json as json_response
 from loguru import logger
 
-from webserver import config
-from webserver.scheduler.scheduler import scheduler, CronTrigger
+from excel.webserver import config
+from excel.webserver.scheduler.scheduler import scheduler
 
 
 semaphore = asyncio.Semaphore(1)
@@ -24,8 +22,6 @@ client = httpx.AsyncClient(
 )
 
 
-
-
 async def download_from_url() -> None:
     try:
         os.remove("./shinobi.xlsx")
@@ -35,17 +31,7 @@ async def download_from_url() -> None:
         logger.debug("Файл расписания не найден")
 
     try:
-        urlretrieve(config.ULTRA_SECRET_URL, "./shinobi.xlsx")
-
-        current_weekday = datetime.now().weekday()
-
-        for i in range(7-(current_weekday+1)):
-            scheduler.add_job(func=download_from_url,
-                            trigger="date",
-                            run_date=datetime.now() +
-                            timedelta(days=i+1),
-                            replace_existing=True)
-        
+        urllib.request.urlretrieve(config.ULTRA_SECRET_URL, "./shinobi.xlsx")
         scheduler.print_jobs()
 
     except Exception as error:
@@ -56,30 +42,8 @@ async def download_from_url() -> None:
 async def add_user(request: Request) -> json_response:
     try:
         asyncio.create_task(download_from_url())
-
         return json_response({"status": "success"}, 200)
     
     except Exception as error:
         logger.error(error)
         return json_response({"status": "failed"}, 500)
-    
-
-
-async def handle_user(date) -> None:
-    async with semaphore:
-        try:
-            scheduler.add_job(
-                func=download_from_url,
-                id=datetime.now(),
-                trigger="date",
-                run_date=datetime.now()
-                + timedelta(
-                    days=random.randrange(7, 14),
-                    hours=random.randrange(1, 9),
-                    minutes=random.randrange(1, 59),
-                ),
-                replace_existing=True,
-            )
-
-        except:
-            raise

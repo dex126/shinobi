@@ -15,11 +15,13 @@ dp = Dispatcher(storage=RedisStorage(db.states_db))
 
 
 async def bot_entrypoint() -> None:
-    from telegram.handlers import main, schedule
+    from telegram.handlers import main, schedule, groups, academic_hours
 
     dp.include_routers(
         main.router,
         schedule.router,
+        groups.router,
+        academic_hours.router,
     )
 
     logger.debug("Бот запущен.")

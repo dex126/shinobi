@@ -1,0 +1,42 @@
+version: '1.0'
+
+services:
+  shinobi_redis:
+    container_name: shinobi_redis
+    hostname: shinobi_redis
+
+    image: redis:alpine
+    restart: always
+
+    volumes:
+      - ../redis:/redis
+
+    networks:
+      - shinobi_network
+
+    entrypoint: ["redis-server", "/redis/redis.conf"]
+
+
+  shinobi:
+    container_name: shinobi_bot
+
+    image: shinobi:latest
+    restart: always
+    depends_on:
+      - shinobi_redis
+
+    env_file: ../.env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DB_HOST=shinobi_redis
+
+    build: 
+      dockerfile: deploy/Dockerfile
+      context: ..
+
+    networks:
+      - shinobi_network
+
+networks:
+  shinobi_network:
+    external: true

@@ -1,11 +1,8 @@
 
-import datetime
-
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from apscheduler.triggers.cron import CronTrigger
 
 
-from webserver import config, server
+from excel.webserver import config, server
 
 
 job_defaults = {
@@ -15,12 +12,13 @@ job_defaults = {
     "timezone": config.SCHEDULER_TIMEZONE,
 }
 
+
 scheduler = AsyncIOScheduler()
 scheduler.configure(
     job_defaults=job_defaults,
 )
 
 
-@scheduler.scheduled_job('interval', days=1)
+@scheduler.scheduled_job('cron', day_of_week="sun")
 async def restart_scheduler() -> None:
     await server.download_from_url()
