@@ -42,6 +42,6 @@ def get_human_data() -> list:
     human_data = df.loc[:, ~df.columns.str.contains('^Unnamed')] # обрубает пустые ячейки и переводит в человекоданные
 
     for i in human_data:
-        ready_groups.append(i)
+        ready_groups.append(str(i).replace(" ", ""))
 
     return(ready_groups)

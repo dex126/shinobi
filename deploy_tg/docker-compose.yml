@@ -5,7 +5,7 @@ services:
     container_name: shinobi_redis
     hostname: shinobi_redis
 
-    image: redis:alpine
+    image: redis:latest
     restart: always
 
     volumes:
@@ -17,10 +17,12 @@ services:
     entrypoint: ["redis-server", "/redis/redis.conf"]
 
 
-  shinobi:
+  shinobi_bot:
     container_name: shinobi_bot
 
     image: shinobi:latest
+    ports:
+      - 9032:9032
     restart: always
     depends_on:
       - shinobi_redis
@@ -29,13 +31,17 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - DB_HOST=shinobi_redis
+      - API_HOST=shinobi_api
+      - SANIC_HOST=shinobi_webserver
+
 
     build: 
-      dockerfile: deploy/Dockerfile
+      dockerfile: deploy_tg/Dockerfile
       context: ..
 
     networks:
       - shinobi_network
+
 
 networks:
   shinobi_network:

@@ -1,0 +1,26 @@
+version: '1.0'
+
+services:
+  shinobi_webserver:
+    container_name: shinobi_webserver
+    hostname: shinobi_webserver
+
+    image: sanicframework/sanic:latest
+    ports:
+      - "8000:8000"
+    restart: always
+
+    env_file: ../excel/.env
+    environment:
+      - SANIC_HOST=shinobi_webserver
+
+    build: 
+      dockerfile: deploy_wb/Dockerfile
+      context: ..
+
+    networks:
+      - shinobi_network
+
+networks:
+  shinobi_network:
+    external: true

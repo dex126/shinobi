@@ -22,3 +22,4 @@ scheduler.configure(
 @scheduler.scheduled_job('cron', day_of_week="sun")
 async def restart_scheduler() -> None:
     await server.download_from_url()
+    await server.move_to_google_calendar()

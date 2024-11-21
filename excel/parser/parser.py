@@ -1,13 +1,18 @@
 import re
+import json
 import pandas as pd
 import requests
 from datetime import datetime
 
 from excel import config
-from excel.parser.modules.days import DAYS_OF_WEEK
+from excel.parser.modules import days, gcalendar
 
 
-async def do_excel(day: str, group: str) -> str: # эта функция приговорена к полному рефакторингу (она говно)
+with open("data.json") as data:
+    data_loads = json.load(data)
+
+
+async def do_excel(day: str, group: str, all: bool | None) -> str: # эта функция приговорена к полному рефакторингу (она говно)
     """
     Парсер расписания из таблицы Excel.
     Требует день недели и группу юзера.
@@ -15,17 +20,16 @@ async def do_excel(day: str, group: str) -> str: # эта функция при�
     """
 
     start_time = datetime.now() # таймер
-    
-    parsed_group = requests.get(f"http://{config.API_HOST}/groups/"+group).json()
+    parsed_group = requests.get(f"http://127.0.0.1:9083/groups/"+group).json()
 
     keys = pd.ExcelFile('shinobi.xlsx')
     current_sheet = keys.sheet_names[len(keys.sheet_names)-1]
 
     df = pd.read_excel(keys, sheet_name=current_sheet, header=None)
 
-    start_row, end_row = DAYS_OF_WEEK[day]
+    start_row, end_row = days.DAYS_OF_WEEK[day]
     day_schedule = df.iloc[start_row-1:end_row,
-                           list(map(int, re.findall(r'\d+',parsed_group["list"])))]
+                           list(map(int, re.findall(r'\d+', parsed_group["list"])))]
 
     day_schedule.columns = ['Time', 'Subject', 'Classroom']
 
@@ -46,6 +50,13 @@ async def do_excel(day: str, group: str) -> str: # эта функция при�
         subject = row['Subject'] if pd.notna(row['Subject']) else "нет"
         classroom = row['Classroom'] if pd.notna(row['Classroom']) else "нет"
 
+        if all:
+            await gcalendar.add_subject_to_calendar({"time": time,
+                                               "subject": subject,
+                                               "classroom": classroom,
+                                               "day_of_week": day,
+                                               "group_id": data_loads[group]})           
+
         response += f"<u>{time}</u> {subject} [<b>{classroom}</b>]\n"
 
     bzh_obzh_schedule = ""
@@ -59,7 +70,7 @@ async def do_excel(day: str, group: str) -> str: # эта функция при�
                     classroom = df.iloc[idx, classroom_index] \
                         if pd.notna(df.iloc[idx, classroom_index]) else "нет"
                     
-                    bzh_obzh_schedule += f"<u>{time}</u> {df.iloc[idx, col]} <b>{classroom}</b>\n"
+                    bzh_obzh_schedule += f"<u>{str(time)[:-3]}</u> {df.iloc[idx, col]} <b>{classroom}</b>\n"
 
     end_time = datetime.now()
 
@@ -70,7 +81,6 @@ async def do_excel(day: str, group: str) -> str: # эта функция при�
         else:
             response += ("\nПары БЖ и ОБЖ отсутствуют.")
             
-    response += ("\n<code>Ответ получен за {} ms.</code>\n".format(end_time - start_time)+
-                 "@shinobi_leave_bot")
+    response += ("\n@shinobi_leave_bot")
 
     return(response)

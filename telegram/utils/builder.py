@@ -54,3 +54,12 @@ def group_buttons() -> types.ReplyKeyboardMarkup:
     grp_markup.adjust(3)
 
     return grp_markup.as_markup() # TODO inline buttons with carousel
+
+
+def url_button(link: str) -> types.InlineKeyboardMarkup:
+    URL = types.InlineKeyboardMarkup(
+        inline_keyboard=[[types.InlineKeyboardButton(text='🔗 Гугл календарь',
+                                                     url=link)]]
+        )
+    
+    return URL

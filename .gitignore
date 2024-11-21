@@ -4,3 +4,5 @@ __pycache__/
 redis/dump.rdb
 .env
 *.xlsx
+*.json
+*.pickle
