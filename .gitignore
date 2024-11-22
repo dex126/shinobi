@@ -6,3 +6,4 @@ redis/dump.rdb
 *.xlsx
 *.json
 *.pickle
+poetry.lock
