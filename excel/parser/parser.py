@@ -20,7 +20,7 @@ async def do_excel(day: str, group: str, all: bool | None) -> str: # эта фу
     """
 
     start_time = datetime.now() # таймер
-    parsed_group = requests.get(f"http://127.0.0.1:9083/groups/"+group).json()
+    parsed_group = requests.get(f"http://{config.API_HOST}/groups/"+group).json()
 
     keys = pd.ExcelFile('shinobi.xlsx')
     current_sheet = keys.sheet_names[len(keys.sheet_names)-1]
