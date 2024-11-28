@@ -1,5 +1,5 @@
 # shinobi
-[![version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/dex126/shinobi/issues) [![Maintainability](https://api.codeclimate.com/v1/badges/7fe6ca6c13394fb6b7db/maintainability)](https://codeclimate.com/github/dex126/shinobi/maintainability) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dex126/shinobi/issues)
+[![version](https://img.shields.io/badge/version-1.1.0-blue)](https://github.com/dex126/shinobi/issues) [![Maintainability](https://api.codeclimate.com/v1/badges/7fe6ca6c13394fb6b7db/maintainability)](https://codeclimate.com/github/dex126/shinobi/maintainability) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dex126/shinobi/issues)
 
 
 ### О проекте
