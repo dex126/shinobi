@@ -61,6 +61,7 @@ async def add_user(request: Request) -> json_response:
     try:
         asyncio.create_task(download_from_url())
         asyncio.create_task(move_to_google_calendar())
+        scheduler.start()
 
         return json_response({"status": "success"}, 200)
     
